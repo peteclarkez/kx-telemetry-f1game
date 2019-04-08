@@ -33,7 +33,7 @@ upd:{[t;p;d]
  };
 
 
-// @example replaydata[hsym `$"F12018-2019.04.03.tplog"]
+// @example replaydata[hsym `$"data/F12018-2019.04.03.tplog"]
 replaydata:{[logfile]
     recordCount:-11!(-2;logfile);    
     0N!"Replaying data ",(string recordCount)," Records";
@@ -52,5 +52,5 @@ insertPacketMotionData:{[t;p;d]
         m2:([]time:enlist p)!flip motioncols!enlist each @[d;motioncols];
         h:([]time:enlist p)!flip (key h)!enlist each value h:d`header;
         (m lj m2) lj h
-    }[p;d] each til 20 // All Motion Values have 20 elements // TODO Maybe able to only insert populated rows
+    }[p;d] each til 20 // All Motion Values have 20 elements
  };
