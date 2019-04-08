@@ -29,16 +29,10 @@ initialiselogfile:{[]
 f1callback:{[t;d] 
 		// 0N!(h;t); // Enable to view some debug
 		dd[`$t]:d;
-        fileHandle@enlist(`upd;t;.z.p;d);
+        fileHandle@enlist(`upd;`$t;.z.p;d);
         numMsgs+:1;
-		h(`upd;t;.z.p;d); // Currently using sync calls as there seemed by issues using async. //neg[h](`upd;t;.z.p;d);
+		h(`upd;`$t;.z.p;d); // Currently using sync calls as there seemed by issues using async. //neg[h](`upd;t;.z.p;d);
 	};
-
-
-upd:{[t;d] 
-   fileHandle@enlist(`upd;t;.z.p;d);
-   numMsgs+:1;
- };
 
 // Register callback function with python & initiate
 .p.set[`f1callback] f1callback;
