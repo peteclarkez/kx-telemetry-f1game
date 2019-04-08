@@ -4,9 +4,11 @@ from f1_telemetry.f1_2018_struct import *
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777
 
-
-	
 def callbacktel(callback):
+	"""
+	Main function to bind as a server and then run a loop to collect data 
+	
+	"""
 
 	sock = bindudp()
 	while True:
@@ -21,7 +23,6 @@ def get_telemetry():
 
 	:yield: A a packet send by F1 2018
 	"""
-
 	sock = bindudp()
 	while True:
 		packet = getcurrentPacket(sock)
@@ -29,15 +30,26 @@ def get_telemetry():
 
 
 def bindudp():
+	"""
+	Function to initilise the UDP server to listen for F1 telemetry
+
+	:return: A socket which sould be connected to the IP address
+	"""
 	sock = socket.socket(socket.AF_INET,
 						 socket.SOCK_DGRAM)
 	sock.bind((UDP_IP, UDP_PORT))
 	
-	print("Binding to 192.168.0.111:20777")
+	print("Binding to "+UDP_IP+":"+str(UDP_PORT))
 	return sock
 
 	
 def getcurrentPacket(sock):
+	"""
+	Function to read the data from the socket and return a complete message in the correct class
+
+	:return: An object representing one of the valid messages
+	"""
+
 	data, _ = sock.recvfrom(1341)
 	header = Header.from_buffer_copy(data[0:21])
 	if int(header.m_packetId) == 0:
