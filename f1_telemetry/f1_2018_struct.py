@@ -1,6 +1,28 @@
 import ctypes
 
-
+def getClassAsDict(struct):
+    result = {}
+    for field, _ in struct._fields_:
+         value = getattr(struct, field)
+         # if the type is not a primitive and it evaluates to False ...
+         if (type(value) not in [int, float, bool]) and not bool(value):
+             # it's a null pointer
+             value = None
+         elif hasattr(value, "_length_") and hasattr(value, "_type_"):
+             # Probably an array             
+             valuelist = list(value)
+             value = []
+             for item in valuelist:
+                if  hasattr(item, "_fields_"):
+                    value.append(getClassAsDict(item))
+                else:
+                    value.append(item)          
+         elif hasattr(value, "_fields_"):
+             # Probably another struct
+             value = getClassAsDict(value)
+         result[field] = value
+    return result
+    
 class Header(ctypes.LittleEndianStructure):
     """
     Ctypes data structure for the header of a F1 2018 UDP packet
@@ -15,6 +37,10 @@ class Header(ctypes.LittleEndianStructure):
         ('m_frameIdentifier', ctypes.c_uint),  # Identifier for the frame the data was retrieved on
         ('m_playerCarIndex', ctypes.c_ubyte)   # Index of player's car in the array
     ]
+    
+    def asdict(self):
+        return getClassAsDict(self)
+
 
 
 class CarMotionData(ctypes.LittleEndianStructure):
